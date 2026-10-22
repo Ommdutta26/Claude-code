@@ -15,18 +15,27 @@
         </div>
 
         <div class="auth-card">
-            <form method="POST" action="{{ url_for('login') }}">
+            {% with messages = get_flashed_messages(with_categories=true) %}
+              {% if messages %}
+                {% for category, message in messages %}
+                  <div class="error-message" role="alert" style="margin-bottom: 1rem; color: #b91c1c; background: #fef2f2; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #fecaca; font-size: 0.875rem; text-align: center;">
+                    {{ message }}
+                  </div>
+                {% endfor %}
+              {% endif %}
+            {% endwith %}
+
+            <form method="POST" action="{{ url_for('login') }}" novalidate>
                 <div class="form-group">
                     <label for="email">Email address</label>
                     <input type="email" id="email" name="email"
                            class="form-input" placeholder="nitish@example.com"
-                           required autofocus>
+                           autofocus>
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password"
-                           class="form-input" placeholder="Your password"
-                           required>
+                           class="form-input" placeholder="Your password">
                 </div>
                 <button type="submit" class="btn-submit">Sign in</button>
             </form>

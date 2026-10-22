@@ -13,38 +13,35 @@
             <h1 class="auth-title">Create your account</h1>
             <p class="auth-subtitle">Start tracking your expenses today</p>
         </div>
-        
-    {% if error %}
-        <div class="error-message" role="alert">
-            {{ error }}
-        </div>
-    {% endif %}
 
         <div class="auth-card">
-            <form method="POST" action="{{ url_for('register') }}">
+            {% if error %}
+                <div class="error-message" role="alert" style="margin-bottom: 1rem; color: #b91c1c; background: #fef2f2; padding: 0.75rem; border-radius: 0.5rem; border: 1px solid #fecaca; font-size: 0.875rem; text-align: center;">
+                    {{ error }}
+                </div>
+            {% endif %}
+
+            <form method="POST" action="{{ url_for('register') }}" novalidate>
                 <div class="form-group">
                     <label for="name">Full name</label>
                     <input type="text" id="name" name="name"
                            class="form-input" placeholder="Omm "
-                           required autofocus>
+                           autofocus>
                 </div>
                 <div class="form-group">
                     <label for="email">Email address</label>
                     <input type="email" id="email" name="email"
-                           class="form-input" placeholder="nitish@example.com"
-                           required>
+                           class="form-input" placeholder="nitish@example.com">
                 </div>
                 <div class="form-group">
                     <label for="password">Password</label>
                     <input type="password" id="password" name="password"
-                           class="form-input" minlength="8" placeholder="Min. 8 characters"
-                           required>
+                           class="form-input" placeholder="Min. 8 characters">
                 </div>
                 <div class="form-group">
                     <label for="confirm_password">Confirm password</label>
                     <input type="password" id="confirm_password" name="confirm_password"
-                           class="form-input" minlength="8" placeholder="Repeat your password"
-                           required>
+                           class="form-input" placeholder="Repeat your password">
                 </div>
                 <button type="submit" class="btn-submit">Create account</button>
             </form>
