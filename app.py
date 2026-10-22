@@ -86,10 +86,10 @@ def register():
 
         if not all([name, email, password, confirm_password]):
             error = "All fields are required."
-
+        elif "@" not in email or "." not in email.split("@")[-1]:
+            error = "Please enter a valid email address."
         elif password != confirm_password:
             error = "Passwords do not match."
-
         elif len(password) < 8:
             error = "Password must be at least 8 characters long."
 
@@ -101,7 +101,12 @@ def register():
         except sqlite3.IntegrityError:
             return render_template(
                 "register.html",
-                error="Email already registered."
+                error="An account with this email already exists. Please sign in or use another email address."
+            )
+        except Exception:
+            return render_template(
+                "register.html",
+                error="Something went wrong. Please try again later."
             )
 
         flash("Account created! Please sign in.", "success")
@@ -118,9 +123,22 @@ def login():
         email = request.form.get("email", "").strip()
         password = request.form.get("password", "")
 
-        user = get_user_by_email(email)
-        if not user or not check_password_hash(user["password_hash"], password):
-            flash("Invalid email or password.", "error")
+        if not email or not password:
+            flash("Please enter both email and password.", "error")
+            return render_template("login.html")
+
+        # Basic email validation
+        if "@" not in email or "." not in email.split("@")[-1]:
+            flash("Please enter a valid email address.", "error")
+            return render_template("login.html")
+
+        try:
+            user = get_user_by_email(email)
+            if not user or not check_password_hash(user["password_hash"], password):
+                flash("Invalid email or password. Please try again.", "error")
+                return render_template("login.html")
+        except Exception:
+            flash("Something went wrong. Please try again later.", "error")
             return render_template("login.html")
 
         session["user_id"] = user["id"]
