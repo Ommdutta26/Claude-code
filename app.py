@@ -88,6 +88,10 @@ def register():
             flash("Passwords do not match.", "error")
             return render_template("register.html")
 
+        if len(password) < 8:
+            flash("Password must be at least 8 characters long.", "error")
+            return render_template("register.html")
+
         try:
             create_user(name, email, password)
         except sqlite3.IntegrityError:
