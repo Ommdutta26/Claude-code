@@ -70,10 +70,14 @@ def landing():
     return render_template("landing.html")
 
 
+
 @app.route("/register", methods=["GET", "POST"])
 def register():
     if session.get("user_id"):
         return redirect(url_for("profile"))
+
+    error = None
+
     if request.method == "POST":
         name = request.form.get("name", "").strip()
         email = request.form.get("email", "").strip()
@@ -81,22 +85,24 @@ def register():
         confirm_password = request.form.get("confirm_password", "")
 
         if not all([name, email, password, confirm_password]):
-            flash("All fields are required.", "error")
-            return render_template("register.html")
+            error = "All fields are required."
 
-        if password != confirm_password:
-            flash("Passwords do not match.", "error")
-            return render_template("register.html")
+        elif password != confirm_password:
+            error = "Passwords do not match."
 
-        if len(password) < 8:
-            flash("Password must be at least 8 characters long.", "error")
-            return render_template("register.html")
+        elif len(password) < 8:
+            error = "Password must be at least 8 characters long."
+
+        if error:
+            return render_template("register.html", error=error)
 
         try:
             create_user(name, email, password)
         except sqlite3.IntegrityError:
-            flash("Email already registered.", "error")
-            return render_template("register.html")
+            return render_template(
+                "register.html",
+                error="Email already registered."
+            )
 
         flash("Account created! Please sign in.", "success")
         return redirect(url_for("login"))
